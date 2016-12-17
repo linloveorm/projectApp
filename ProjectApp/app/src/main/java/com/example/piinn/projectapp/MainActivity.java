@@ -13,6 +13,8 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.AnalogClock;
+import android.widget.DigitalClock;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -24,6 +26,7 @@ import com.google.android.gms.location.LocationServices;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -32,9 +35,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private GoogleApiClient googleApiClient;
     TextView text;
     TextView statusText;
-    Timer timer = new Timer();
-    TimerTask timerTask;
-    //int id = 01;
+    TextView test;
+    int count = 0 ;
+
+    DigitalClock digitalClock ;
+
+    Calendar calendar = Calendar.getInstance();
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+    final String strDate = simpleDateFormat.format(calendar.getTime());
+
+
+
     //Intent intent = new Intent(this, MainActivity.class);
     //PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -48,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         text = (TextView) findViewById(R.id.speed);
         statusText = (TextView) findViewById(R.id.status);
+        test = (TextView)findViewById(R.id.test);
+
+        digitalClock = (DigitalClock)findViewById(R.id.digitalClk);
 
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -55,6 +69,27 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .addOnConnectionFailedListener(this)
                 .build();
 
+
+
+
+
+
+        //counting time
+        final Timer T=new Timer();
+        T.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        test.setText("\ncount="+count/60+"current : "+System.currentTimeMillis()/1000 );
+                        count++;
+                    }
+                });
+            }
+        }, 1000, 1000);
 
 
     }
@@ -127,25 +162,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         float bearing = location.getBearing();
         float speed = location.getSpeed();
         long time = location.getTime()/1000;
-        boolean stopApp = true;
 
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
-        SimpleDateFormat secondFormat = new SimpleDateFormat("ss");
-        int timeSS=0;
-        final String strDate = simpleDateFormat.format(calendar.getTime());
-        //long realTime = location.getElapsedRealtimeNanos();
-        int direction ;
-        long Rt = (((time/1000)/60)/60)/24;
 
-        long startTime = 0L,timeInMilliseconds = 0L,timeSwapBuff=0L,updateTime = 0L;
-        timeInMilliseconds = SystemClock.uptimeMillis()-startTime;
-        updateTime = timeSwapBuff+timeInMilliseconds;
-        int secs = (int)(updateTime/1000);
-        int mins = secs/60;
-        secs %= 60;
-        int millisec = (int)(updateTime%1000);
 
+
+
+        //test.setText("\nLatitude Start : "+latStart+"\nLong Start : "+longStart+"\nCount : "+counts+"\nCheck : "+timeSwapBuff+"\nMin : "+secs+"\nMinC : "+secsCheck);
 
 
 
@@ -153,12 +175,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         text.setText("\n\nSpeed : " + speed +
                 "\nLatitude : " + latitude +
                 "\nLongitude : " + longitude +
-                "\nTime : " + strDate +
-                "\nTimer : " + mins + ":" + String.format("%2d", secs) + ":" + String.format("%3d",millisec)+
-                "\nProvider : "+provider+
-                "\nAltitude : "+altitude+
-                "\nAccuracy : "+accuracy+
-                "\nBearing : "+bearing);
+                "\nTime : " + strDate );
 
 
 
@@ -167,8 +184,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle("Telematics For Car Insurance")
                         .setAutoCancel(false)
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText("Speed : " + speed + "\nLongitude : "+longitude+"\nLatitude: "+latitude))
-                        .setContentText("Speed : " + speed + "\nLongitude : "+longitude+"\nLatitude: "+latitude)
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("Speed : " + speed +
+                                                                                "\nLongitude : "+longitude+
+                                                                                "\nLatitude: "+latitude))
                         .setOngoing(true);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -177,6 +195,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
     }
+
+
 
 
 }

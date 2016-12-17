@@ -12,19 +12,30 @@
     tools:context="com.example.piinn.projectapp.MainActivity"
     tools:theme="@style/Base.ThemeOverlay.AppCompat.Light">
 
-
+    <DigitalClock
+        android:id="@+id/digitalClk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/status"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/digitalClk"/>
+
+    <TextView
+        android:id="@+id/test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/status"/>
 
     <TextView
         android:id="@+id/speed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/status"/>
-
+        android:layout_below="@+id/test"/>
 
 
 
