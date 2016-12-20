@@ -24,6 +24,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.security.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -36,20 +37,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     TextView text;
     TextView statusText;
     TextView test;
-    int count = 0 ;
+    TextView distanceTxt;
 
+    //boolean locationChange = true;
+
+    //initial count time
+    int countTime = 0 ;
+    int countCheck = 0 ;
+
+
+    //initial Timestamp Start Time
+    String mytime = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
+
+    //Set Clock
     DigitalClock digitalClock ;
-
-    Calendar calendar = Calendar.getInstance();
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
-    final String strDate = simpleDateFormat.format(calendar.getTime());
-
-
-
-    //Intent intent = new Intent(this, MainActivity.class);
-    //PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
 
 
     @Override
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         text = (TextView) findViewById(R.id.speed);
         statusText = (TextView) findViewById(R.id.status);
         test = (TextView)findViewById(R.id.test);
+        distanceTxt = (TextView)findViewById(R.id.distance);
 
         digitalClock = (DigitalClock)findViewById(R.id.digitalClk);
 
@@ -69,12 +71,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .addOnConnectionFailedListener(this)
                 .build();
 
-
-
-
-
-
-        //counting time
+        //counting time and time stamp start time
         final Timer T=new Timer();
         T.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -84,12 +81,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     @Override
                     public void run()
                     {
-                        test.setText("\ncount="+count/60+"current : "+System.currentTimeMillis()/1000 );
-                        count++;
+                        test.setText("\ncount = "+countTime+"\ntimestamp : "+mytime);
+                        countTime++;
                     }
                 });
             }
         }, 1000, 1000);
+
+
 
 
     }
@@ -115,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onConnected(Bundle bundle) {
         // Do something when connected with Google API Client
-
 
         LocationAvailability locationAvailability = LocationServices.FusedLocationApi.getLocationAvailability(googleApiClient);
         if (locationAvailability.isLocationAvailable()) {
@@ -154,46 +152,107 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onLocationChanged(Location location) {
-        String provider = location.getProvider();
+        countCheck++;
+        Log.i("test",""+countCheck);
+        Log.i("Test 2",""+countTime);
+
+        //String provider = location.getProvider();
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        double altitude = location.getAltitude();
-        float accuracy = location.getAccuracy();
-        float bearing = location.getBearing();
+        //double altitude = location.getAltitude();
+        //float accuracy = location.getAccuracy();
+        //float bearing = location.getBearing();
         float speed = location.getSpeed();
-        long time = location.getTime()/1000;
+        //long time = location.getTime()/1000;
+
+        //show Current time
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+        final String strDate = simpleDateFormat.format(calendar.getTime());
 
 
 
+        //calculate Distance
+        String latStr = java.text.NumberFormat.getInstance().format(latitude);
+        String longStr = java.text.NumberFormat.getInstance().format(longitude);
+        String latNext = "" ;
+        String longNext = "" ;
+        double distance = 0;
+
+        //calculate distance every 1 minute
+
+        if(((countTime-1)%60) == 0 )
+        {
+            latNext = java.text.NumberFormat.getInstance().format(latitude);;
+            longNext = java.text.NumberFormat.getInstance().format(longitude);
+
+            distance = getDistance(latStr,longStr,latNext,longNext);
+        }
+
+        distanceTxt.setText("\nDistance : " + distance +
+                "\nStart : " + latStr + " , " + longStr +
+                "\nNext : " + latNext + " , " + longNext);
 
 
-        //test.setText("\nLatitude Start : "+latStart+"\nLong Start : "+longStart+"\nCount : "+counts+"\nCheck : "+timeSwapBuff+"\nMin : "+secs+"\nMinC : "+secsCheck);
 
-
-
-
+        //Show Location Speed and time
         text.setText("\n\nSpeed : " + speed +
                 "\nLatitude : " + latitude +
                 "\nLongitude : " + longitude +
-                "\nTime : " + strDate );
+                "\nTime : " + strDate +
+                "\nCheck : "+countCheck);
+
+        latStr = latNext;
+        longStr = longNext;
 
 
-
+        //Notification applicatiom
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle("Telematics For Car Insurance")
                         .setAutoCancel(false)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText("Speed : " + speed +
-                                                                                "\nLongitude : "+longitude+
-                                                                                "\nLatitude: "+latitude))
+                                "\nLongitude : "+longitude+
+                                "\nLatitude: "+latitude))
                         .setOngoing(true);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(01, mBuilder.build());
 
 
+    }
 
+    //calculate distance from lat and long
+    private double getDistance (String latStart,String longStart,String latNext,String longNext)
+    {
+
+
+        double latS = Double.parseDouble(latStart);
+        double longS = Double.parseDouble(longStart);
+        double latN = Double.parseDouble(latNext);
+        double longN = Double.parseDouble(longNext);
+
+        double  calLong = longN-longS;
+        double dist = Math.sin(deg2rad(latS))
+                        * Math.sin(deg2rad(latN))
+                        + Math.cos(deg2rad(latS))
+                        * Math.cos(deg2rad(latN))
+                        * Math.cos(deg2rad(calLong));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        return (dist);
+
+
+    }
+
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
     }
 
 
