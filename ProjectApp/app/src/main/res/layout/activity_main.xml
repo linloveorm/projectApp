@@ -26,12 +26,16 @@
         android:layout_below="@+id/digitalClk"/>
 
     <TextView
-        android:id="@+id/test"
+        android:id="@+id/timerTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/status"/>
 
-
+    <TextView
+        android:id="@+id/test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timerTxt"/>
 
     <TextView
         android:id="@+id/speed"
