@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     //initial count time
     int countTime = 0 ;
     int countCheck = 0 ;
+    int timerStart = 0;
+    int timerNext = 0;
 
     //Initial variable for calculate distance
     double latStr = 0;
@@ -51,6 +53,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     //test if
     int i = 0,j=0;
 
+    //Initial variable for get speed
+    float speedStart = 0;
+    float speedNext = 0;
+
+    //Initial varialble for calculate accelerate
+    double accStart = 0;
+    double accNext = 0;
+    double accChange = 0;
 
 
     //initial Timestamp Start Time
@@ -192,6 +202,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             //calculate Distance
             latStr = latitude;
             longStr =longitude;
+            speedStart = speed;
+            timerStart = countTime;
+
             timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
             timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
 
@@ -203,11 +216,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         {
             latNext = latitude;
             longNext = longitude;
+            speedNext = speed;
+            timerNext = countTime ;
 
             distance = getDistance(latStr,longStr,latNext,longNext);
+            accStart = calAccelerate(speedStart,speedNext,timerStart,timerNext);
+
+            accChange = accStart-accNext;
+
             timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
             timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
-
 
             j++;
         }
@@ -215,7 +233,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         //show distance
         distanceTxt.setText("\nDistance : " + distance +
                 "\nStart : " + latStr + " , " + longStr +
-                "\nNext : " + latNext + " , " + longNext);
+                "\nNext : " + latNext + " , " + longNext+
+                "\nSpeed Start : "+speedStart+" , "+speedNext+
+                "\nTimer : "+timerStart+" , "+timerNext+
+                "\nAccelerate : "+accStart+" , "+accNext+
+                "\nAcChange : "+accChange);
 
         //When location change
         if(!locationChange&&distance != 0)
@@ -223,6 +245,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             i++;
             latStr = latNext;
             longStr = longNext;
+            speedStart = speedNext;
+            timerStart = timerNext;
+            if(accStart != 0 && accNext!=0)
+            {
+                accStart = accNext;
+            }
 
             locationChange = true;
         }
@@ -286,10 +314,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         return (rad * 180.0 / Math.PI);
     }
 
-    private double calAccelerate()
+    private double calAccelerate(float speedS,float speedN,int timerS,int timerN)
     {
+        double accelerateM = (speedS-speedN) / (timerS - timerN) ;
 
-        return 0.0;
+        return accelerateM;
     }
 
 
