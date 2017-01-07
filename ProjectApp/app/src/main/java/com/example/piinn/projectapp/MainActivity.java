@@ -168,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         statusText.setText("failed");
     }
 
+    /* onLocationChange Real
     @Override
     public void onLocationChanged(Location location) {
         countCheck++;
@@ -217,6 +218,371 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             latNext = latitude;
             longNext = longitude;
             speedNext = speed;
+            timerNext = countTime ;
+
+            distance = getDistance(latStr,longStr,latNext,longNext);
+            accStart = calAccelerate(speedStart,speedNext,timerStart,timerNext);
+
+            accChange = accStart-accNext;
+
+            timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
+            timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
+
+            j++;
+        }
+
+        //show distance
+        distanceTxt.setText("\nDistance : " + distance +
+                "\nStart : " + latStr + " , " + longStr +
+                "\nNext : " + latNext + " , " + longNext+
+                "\nSpeed Start : "+speedStart+" , "+speedNext+
+                "\nTimer : "+timerStart+" , "+timerNext+
+                "\nAccelerate : "+accStart+" , "+accNext+
+                "\nAcChange : "+accChange);
+
+        //When location change
+        if(!locationChange&&distance != 0)
+        {
+            i++;
+            latStr = latNext;
+            longStr = longNext;
+            speedStart = speedNext;
+            timerStart = timerNext;
+            if(accStart != 0 && accNext!=0)
+            {
+                accStart = accNext;
+            }
+
+            locationChange = true;
+        }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        //Show Location Speed and time
+        text.setText("\n\nSpeed : " + speed +
+                "\nLatitude : " + latitude +
+                "\nLongitude : " + longitude +
+                "\nTime : " + strDate +
+                "\nCheck : "+countCheck);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        //Notification application
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("Telematics For Car Insurance")
+                        .setAutoCancel(false)
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText("Speed : " + speed +
+                                "\nLongitude : "+longitude+
+                                "\nLatitude: "+latitude))
+                        .setOngoing(true);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(01, mBuilder.build());
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    }*/
+
+
+    //onLocationChange for test
+    @Override
+    public void onLocationChanged(Location location) {
+        countCheck++;
+        Log.i("test",""+countCheck);
+        Log.i("Test",""+countTime);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //time stamp when get location
+        String timeStampLoc ;
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //initial variable that need to use comment
+        float speed = location.getSpeed();
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //show Current time
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+        final String strDate = simpleDateFormat.format(calendar.getTime());
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //Initial lat and long in Start
+        if(countCheck==1)//1st
+        {
+            i++;
+            //calculate Distance
+            latStr = 13.721940;
+            longStr =100.776215;
+            speedStart = 60;
+            timerStart = countTime;
+
+            timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
+            timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
+
+            locationChange = false;
+        }
+
+        //calculate distance every 1 minute
+        if(countCheck==2)//2nd
+        {
+            latNext = 13.708242;
+            longNext = 100.774757;
+            speedNext = 80;
+            timerNext = countTime ;
+
+            distance = getDistance(latStr,longStr,latNext,longNext);
+            accStart = calAccelerate(speedStart,speedNext,timerStart,timerNext);
+
+            accChange = accStart-accNext;
+
+            timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
+            timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
+
+            j++;
+        }
+
+        if(countCheck==3)//3rd
+        {
+            latNext = 13.721940;
+            longNext = 100.776215;
+            speedNext = 80;
+            timerNext = countTime ;
+
+            distance = getDistance(latStr,longStr,latNext,longNext);
+            accStart = calAccelerate(speedStart,speedNext,timerStart,timerNext);
+
+            accChange = accStart-accNext;
+
+            timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
+            timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
+
+            j++;
+        }
+
+        if(countCheck==4)//4th
+        {
+            latNext = 13.713290;
+            longNext = 100.754467;
+            speedNext = 80;
+            timerNext = countTime ;
+
+            distance = getDistance(latStr,longStr,latNext,longNext);
+            accStart = calAccelerate(speedStart,speedNext,timerStart,timerNext);
+
+            accChange = accStart-accNext;
+
+            timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
+            timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
+
+            j++;
+        }
+
+        if(countCheck==5)//5th
+        {
+            latNext = 13.714660;
+            longNext = 100.748944;
+            speedNext = 80;
+            timerNext = countTime ;
+
+            distance = getDistance(latStr,longStr,latNext,longNext);
+            accStart = calAccelerate(speedStart,speedNext,timerStart,timerNext);
+
+            accChange = accStart-accNext;
+
+            timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
+            timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
+
+            j++;
+        }
+
+        if(countCheck==6)//6th
+        {
+            latNext = 13.717076;
+            longNext = 100.744101;
+            speedNext = 60;
+            timerNext = countTime ;
+
+            distance = getDistance(latStr,longStr,latNext,longNext);
+            accStart = calAccelerate(speedStart,speedNext,timerStart,timerNext);
+
+            accChange = accStart-accNext;
+
+            timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
+            timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
+
+            j++;
+        }
+
+        if(countCheck==7)//7th
+        {
+            latNext = 13.718226;
+            longNext = 100.740614;
+            speedNext = 60;
+            timerNext = countTime ;
+
+            distance = getDistance(latStr,longStr,latNext,longNext);
+            accStart = calAccelerate(speedStart,speedNext,timerStart,timerNext);
+
+            accChange = accStart-accNext;
+
+            timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
+            timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
+
+            j++;
+        }
+
+
+        if(countCheck==8)//8th
+        {
+            latNext = 13.722311;
+            longNext = 100.739973;
+            speedNext = 65;
+            timerNext = countTime ;
+
+            distance = getDistance(latStr,longStr,latNext,longNext);
+            accStart = calAccelerate(speedStart,speedNext,timerStart,timerNext);
+
+            accChange = accStart-accNext;
+
+            timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
+            timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
+
+            j++;
+        }
+
+        if(countCheck==9)//9th
+        {
+            latNext = 13.722650;
+            longNext = 100.746145;
+            speedNext = 65;
+            timerNext = countTime ;
+
+            distance = getDistance(latStr,longStr,latNext,longNext);
+            accStart = calAccelerate(speedStart,speedNext,timerStart,timerNext);
+
+            accChange = accStart-accNext;
+
+            timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
+            timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
+
+            j++;
+        }
+
+        if(countCheck==10)//10th
+        {
+            latNext = 13.722762;
+            longNext = 100.749373;
+            speedNext = 70;
+            timerNext = countTime ;
+
+            distance = getDistance(latStr,longStr,latNext,longNext);
+            accStart = calAccelerate(speedStart,speedNext,timerStart,timerNext);
+
+            accChange = accStart-accNext;
+
+            timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
+            timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
+
+            j++;
+        }
+
+        if(countCheck==11)//11th
+        {
+            latNext = 13.723171;
+            longNext = 100.751351;
+            speedNext = 65;
+            timerNext = countTime ;
+
+            distance = getDistance(latStr,longStr,latNext,longNext);
+            accStart = calAccelerate(speedStart,speedNext,timerStart,timerNext);
+
+            accChange = accStart-accNext;
+
+            timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
+            timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
+
+            j++;
+        }
+
+        if(countCheck==12)//12th
+        {
+            latNext = 13.722415;
+            longNext = 100.752858;
+            speedNext = 70;
+            timerNext = countTime ;
+
+            distance = getDistance(latStr,longStr,latNext,longNext);
+            accStart = calAccelerate(speedStart,speedNext,timerStart,timerNext);
+
+            accChange = accStart-accNext;
+
+            timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
+            timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
+
+            j++;
+        }
+
+        if(countCheck==13)//13th
+        {
+            latNext = 13.721660;
+            longNext = 100.752858;
+            speedNext = 80;
+            timerNext = countTime ;
+
+            distance = getDistance(latStr,longStr,latNext,longNext);
+            accStart = calAccelerate(speedStart,speedNext,timerStart,timerNext);
+
+            accChange = accStart-accNext;
+
+            timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
+            timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
+
+            j++;
+        }
+
+        if(countCheck==14)//14th
+        {
+            latNext = 13.721798;
+            longNext = 100.766236;
+            speedNext = 80;
+            timerNext = countTime ;
+
+            distance = getDistance(latStr,longStr,latNext,longNext);
+            accStart = calAccelerate(speedStart,speedNext,timerStart,timerNext);
+
+            accChange = accStart-accNext;
+
+            timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
+            timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
+
+            j++;
+        }
+
+        if(countCheck==15)//13th
+        {
+            latNext = 13.721940;
+            longNext = 100.776215;
+            speedNext = 80;
+            timerNext = countTime ;
+
+            distance = getDistance(latStr,longStr,latNext,longNext);
+            accStart = calAccelerate(speedStart,speedNext,timerStart,timerNext);
+
+            accChange = accStart-accNext;
+
+            timeStampLoc = java.text.DateFormat.getTimeInstance().format(Calendar.getInstance().getTime());
+            timerTxt.setText("Test : "+i+" , "+j+"\nLocation Time Stamp : "+timeStampLoc+"\nBoolean : "+locationChange);
+
+            j++;
+        }
+
+        if(countCheck==16)//16th
+        {
+            latNext = 13.721900;
+            longNext = 100.774693;
+            speedNext = 80;
             timerNext = countTime ;
 
             distance = getDistance(latStr,longStr,latNext,longNext);
